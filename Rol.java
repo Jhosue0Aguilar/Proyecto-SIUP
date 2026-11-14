@@ -7,9 +7,15 @@ public class Rol {
         this.permisos = permisos;
     }
 
-    public String getNombre() { return nombre; }
-    public String getPermisos() { return permisos; }
+    public String getNombre() { 
+        return nombre; 
+    }
+    public String getPermisos() { 
+        return permisos; 
+    }
 
     @Override
-    public String toString() { return nombre + " (" + permisos + ")"; }
+    public String toString() { 
+        return nombre + " (" + permisos + ")"; 
+    }
 }

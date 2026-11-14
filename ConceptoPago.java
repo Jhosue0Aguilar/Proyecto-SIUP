@@ -13,9 +13,15 @@ public class ConceptoPago {
         return monto;
     }
 
-    public String getTipo() { return tipo; }
-    public String getNombre() { return nombre; }
+    public String getTipo() { 
+        return tipo; 
+    }
+    public String getNombre() { 
+        return nombre; 
+    }
 
     @Override
-    public String toString() { return nombre + " (" + tipo + ") - S/ " + String.format("%.2f", monto); }
+    public String toString() { 
+        return nombre + " (" + tipo + ") - S/ " + String.format("%.2f", monto); 
+    }
 }

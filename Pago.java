@@ -5,12 +5,12 @@ public class Pago {
     private Double monto;
     private EstadoPago estado;
 
-    private Persona persona;          // realiza
-    private Usuario registradoPor;    // registra
-    private ConceptoPago concepto;    // paga
-    private MetodoPago metodoPago;    // usa
-    private Comprobante comprobante;  // genera
-    private Reembolso reembolso;      // origina
+    private Persona persona;        
+    private Usuario registradoPor;    
+    private ConceptoPago concepto;   
+    private MetodoPago metodoPago;    
+    private Comprobante comprobante;
+    private Reembolso reembolso;      
 
     public Pago(Persona persona, Usuario registradoPor, ConceptoPago concepto) {
         this.fecha = LocalDate.now();
@@ -31,7 +31,8 @@ public class Pago {
             estado = EstadoPago.PAGADO;
             comprobante = new Comprobante(monto);
             comprobante.generar(this);
-        } else {
+        } 
+        else {
             estado = EstadoPago.RECHAZADO;
             System.out.println("Pago RECHAZADO: metodo de pago invalido.");
         }
@@ -41,7 +42,8 @@ public class Pago {
         if (estado == EstadoPago.PENDIENTE || estado == EstadoPago.RECHAZADO) {
             estado = EstadoPago.ANULADO;
             System.out.println("Pago anulado.");
-        } else {
+        } 
+        else {
             System.out.println("Solo se pueden anular pagos pendientes o rechazados.");
         }
     }
@@ -57,14 +59,30 @@ public class Pago {
     }
 
     public void setMetodoPago(MetodoPago metodoPago) { this.metodoPago = metodoPago; }
-    public LocalDate getFecha() { return fecha; }
-    public Double getMonto() { return monto; }
-    public EstadoPago getEstado() { return estado; }
-    public Persona getPersona() { return persona; }
-    public Usuario getRegistradoPor() { return registradoPor; }
-    public ConceptoPago getConcepto() { return concepto; }
-    public MetodoPago getMetodoPago() { return metodoPago; }
-    public Comprobante getComprobante() { return comprobante; }
+    public LocalDate getFecha() { 
+        return fecha; 
+    }
+    public Double getMonto() { 
+        return monto; 
+    }
+    public EstadoPago getEstado() { 
+        return estado; 
+    }
+    public Persona getPersona() { 
+        return persona; 
+    }
+    public Usuario getRegistradoPor() { 
+        return registradoPor; 
+    }
+    public ConceptoPago getConcepto() { 
+        return concepto; 
+    }
+    public MetodoPago getMetodoPago() { 
+        return metodoPago; 
+    }
+    public Comprobante getComprobante() { 
+        return comprobante; 
+    }
 
     @Override
     public String toString() {

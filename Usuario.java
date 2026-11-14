@@ -15,8 +15,16 @@ public class Usuario {
         return activo && this.usuario.equals(usuario) && this.clave.equals(clave);
     }
 
-    public String getUsuario() { return usuario; }
-    public Boolean getActivo() { return activo; }
-    public void setActivo(Boolean activo) { this.activo = activo; }
-    public Rol getRol() { return rol; }
+    public String getUsuario() { 
+        return usuario; 
+    }
+    public Boolean getActivo() { 
+        return activo; 
+    }
+    public void setActivo(Boolean activo) { 
+        this.activo = activo; 
+    }
+    public Rol getRol() { 
+        return rol; 
+    }
 }

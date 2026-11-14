@@ -1,20 +1,18 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Persona {
     protected int id;
     protected String nombres;
-    protected String nroDoc;
+    protected String numeroDoc;
     protected Usuario usuario;
     protected List<Pago> pagos = new ArrayList<>();
 
     public Persona(int id, String nombres, String nroDoc) {
         this.id = id;
         this.nombres = nombres;
-        this.nroDoc = nroDoc;
+        this.numeroDoc = nroDoc;
     }
 
-    // Suma de los pagos aun no cancelados (pendientes o rechazados)
     public double verDeuda() {
         double deuda = 0;
         for (Pago p : pagos) {
@@ -29,15 +27,27 @@ public abstract class Persona {
 
     public void agregarPago(Pago p) { pagos.add(p); }
 
-    public int getId() { return id; }
-    public String getNombres() { return nombres; }
-    public String getNroDoc() { return nroDoc; }
-    public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-    public List<Pago> getPagos() { return pagos; }
+    public int getId() { 
+        return id; 
+    }
+    public String getNombres() { 
+        return nombres; 
+    }
+    public String hetNumeroDoc() { 
+        return numeroDoc; 
+    }
+    public Usuario getUsuario() { 
+        return usuario; 
+    }
+    public void setUsuario(Usuario usuario) { 
+        this.usuario = usuario; 
+    }
+    public List<Pago> getPagos() {
+        return pagos; 
+    }
 
     @Override
     public String toString() {
-        return "[" + id + "] " + getTipo() + " - " + nombres + " (Doc: " + nroDoc + ")";
+        return "[" + id + "] " + getTipo() + " - " + nombres + " (Doc: " + numeroDoc + ")";
     }
 }

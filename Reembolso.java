@@ -19,5 +19,7 @@ public class Reembolso {
                 + " | Motivo: " + motivo + " | Fecha: " + fecha);
     }
 
-    public boolean isAprobado() { return aprobado; }
+    public boolean isAprobado() { 
+        return aprobado; 
+    }
 }

@@ -21,6 +21,10 @@ public class Comprobante {
         System.out.println("=======================");
     }
 
-    public String getNumero() { return numero; }
-    public Double getTotal() { return total; }
+    public String getNumero() { 
+        return numero; 
+    }
+    public Double getTotal() { 
+        return total; 
+    }
 }
