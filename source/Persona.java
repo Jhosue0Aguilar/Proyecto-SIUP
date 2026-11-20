@@ -33,7 +33,7 @@ public abstract class Persona {
     public String getNombres() { 
         return nombres; 
     }
-    public String hetNumeroDoc() { 
+    public String getNumeroDoc() { 
         return numeroDoc; 
     }
     public Usuario getUsuario() { 
