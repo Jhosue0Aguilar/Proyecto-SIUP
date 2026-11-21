@@ -11,7 +11,7 @@ Proyecto-SIUP/
 └── README.md
 ```
 
-## Cómo ejecutar
+## Cómo ejecutar:
  
 1. Clona el repositorio y entra a la carpeta:
 ```bash
