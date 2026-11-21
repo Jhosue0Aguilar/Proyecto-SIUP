@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class DialogoProcesarPago extends JDialog {
     private JComboBox<String> cboMetodo =
@@ -36,7 +36,7 @@ public class DialogoProcesarPago extends JDialog {
         setLocationRelativeTo(padre);
     }
 
-    /** Muestra el diálogo y devuelve el método elegido, o null si se canceló. */
+    // Muestra el diálogo y devuelve el método elegido, o null si se canceló.
     public MetodoPago mostrar() {
         setVisible(true);
         return resultado;

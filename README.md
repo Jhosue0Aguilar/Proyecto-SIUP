@@ -6,7 +6,7 @@ Programa en Java que gestiona personas (estudiantes, docentes y externos), pagos
  
 ```
 Proyecto-SIUP/
-├── src/        # código fuente (.java)
+├── source/        # código fuente (.java)
 ├── out/        # clases compiladas (se genera al compilar)
 └── README.md
 ```

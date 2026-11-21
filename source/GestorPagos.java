@@ -24,8 +24,8 @@ public class GestorPagos {
         d.setUsuario(new Usuario("admin", "1234", admin));
         personas.add(d);
 
-        Estudiante e = new Estudiante(siguienteId++, "Ana Torres", "71234567", "20250001", "Ing. de Sistemas");
-        e.setUsuario(new Usuario("ana", "ana123", cajero));
+        Estudiante e = new Estudiante(siguienteId++, "Yael Mendoza", "71234567", "20250001", "Ing. de Sistemas");
+        e.setUsuario(new Usuario("yaelmelagoza", "67123", cajero));
         personas.add(e);
     }
 
