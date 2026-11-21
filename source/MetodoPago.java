@@ -1,21 +1,20 @@
 public class MetodoPago {
-    private String tipo;
-    private String numeroOp;
+    private final TipoMetodoPago tipo;
+    private final String numeroOp;
 
-    public MetodoPago(String tipo, String numeroOp) {
+    public MetodoPago(TipoMetodoPago tipo, String numeroOp) {
         this.tipo = tipo;
         this.numeroOp = numeroOp;
     }
 
-
     public boolean validar() {
-        return numeroOp != null && numeroOp.trim().length() >= 4;
+        return tipo != null && Validador.validarNumeroOp(numeroOp);
     }
 
-    public String getTipo() { 
-        return tipo; 
+    public TipoMetodoPago getTipo() {
+        return tipo;
     }
-    public String getNumeroOp() { 
-        return numeroOp; 
+    public String getNumeroOp() {
+        return numeroOp;
     }
 }

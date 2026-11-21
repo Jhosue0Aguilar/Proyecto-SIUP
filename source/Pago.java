@@ -1,92 +1,163 @@
-import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Pago {
-    private LocalDate fecha;
-    private Double monto;
+    private final int id;
+    private final LocalDateTime fecha;
+    private final BigDecimal monto;
     private EstadoPago estado;
 
-    private Persona persona;        
-    private Usuario registradoPor;    
-    private ConceptoPago concepto;   
-    private MetodoPago metodoPago;    
+    private final Persona persona;
+    private final Usuario registradoPor;
+    private final ConceptoPago concepto;
+    private MetodoPago metodoPago;
     private Comprobante comprobante;
-    private Reembolso reembolso;      
+    private Reembolso reembolso;
 
-    public Pago(Persona persona, Usuario registradoPor, ConceptoPago concepto) {
-        this.fecha = LocalDate.now();
+    // Auditoria: quien hizo cada accion y cuando.
+    private final List<String> historial = new ArrayList<>();
+
+    /** El pago NO se agrega solo a la persona: lo hace GestorPagos.registrarPago. */
+    public Pago(int id, Persona persona, Usuario registradoPor, ConceptoPago concepto) {
+        this.id = id;
+        this.fecha = LocalDateTime.now();
         this.persona = persona;
         this.registradoPor = registradoPor;
         this.concepto = concepto;
-        this.monto = concepto.calcularMonto();
+        this.monto = concepto.calcularMonto(persona);
         this.estado = EstadoPago.PENDIENTE;
-        persona.agregarPago(this);
+        registrarEvento(registradoPor, "Registrado como PENDIENTE por S/ " + Formato.monto(monto));
     }
 
-    public void procesar() {
-        if (estado != EstadoPago.PENDIENTE && estado != EstadoPago.RECHAZADO) {
-            System.out.println("Este pago no se puede procesar (estado: " + estado + ").");
-            return;
+    public boolean puedeProcesarse() {
+        return estado == EstadoPago.PENDIENTE || estado == EstadoPago.RECHAZADO;
+    }
+
+    public boolean puedeAnularse() {
+        return estado == EstadoPago.PENDIENTE || estado == EstadoPago.RECHAZADO;
+    }
+
+    public boolean tieneReembolsoPendiente() {
+        return reembolso != null && reembolso.isPendiente();
+    }
+
+    public boolean puedeSolicitarReembolso() {
+        return estado == EstadoPago.PAGADO && !tieneReembolsoPendiente();
+    }
+
+    /**
+     * Cobra el pago. El metodo de pago solo se guarda si el cobro se realiza, asi un intento
+     * sobre un pago ya cobrado no cambia los datos del comprobante original.
+     * Lanza IllegalStateException si el estado no permite procesar; devuelve el mensaje del resultado.
+     */
+    public String procesar(MetodoPago metodo, Usuario por) {
+        if (!puedeProcesarse()) {
+            throw new IllegalStateException("Este pago no se puede procesar (estado: " + estado + ").");
         }
-        if (metodoPago != null && metodoPago.validar()) {
-            estado = EstadoPago.PAGADO;
-            comprobante = new Comprobante(monto);
-            comprobante.generar(this);
-        } 
-        else {
+        if (metodo == null || !metodo.validar()) {
             estado = EstadoPago.RECHAZADO;
-            System.out.println("Pago RECHAZADO: metodo de pago invalido.");
+            registrarEvento(por, "Intento de cobro RECHAZADO: metodo de pago invalido");
+            return "Pago RECHAZADO: metodo de pago invalido.";
         }
+        metodoPago = metodo;
+        estado = EstadoPago.PAGADO;
+        comprobante = new Comprobante(monto);
+        registrarEvento(por, "Cobrado con " + metodo.getTipo() + " (Op: " + metodo.getNumeroOp()
+                + "), comprobante " + comprobante.getNumero());
+        return "Pago procesado correctamente. Comprobante " + comprobante.getNumero() + ".";
     }
 
-    public void anular() {
-        if (estado == EstadoPago.PENDIENTE || estado == EstadoPago.RECHAZADO) {
-            estado = EstadoPago.ANULADO;
-            System.out.println("Pago anulado.");
-        } 
-        else {
-            System.out.println("Solo se pueden anular pagos pendientes o rechazados.");
+    public String anular(Usuario por) {
+        if (!puedeAnularse()) {
+            throw new IllegalStateException("Solo se pueden anular pagos pendientes o rechazados.");
         }
+        estado = EstadoPago.ANULADO;
+        registrarEvento(por, "Anulado");
+        return "Pago anulado.";
     }
 
-    public void solicitarReembolso(String motivo) {
+    /** Crea una solicitud de reembolso pendiente; el pago sigue PAGADO hasta que se apruebe. */
+    public String solicitarReembolso(String motivo, Usuario por) {
         if (estado != EstadoPago.PAGADO) {
-            System.out.println("Solo se pueden reembolsar pagos en estado PAGADO.");
-            return;
+            throw new IllegalStateException("Solo se pueden reembolsar pagos en estado PAGADO.");
         }
-        reembolso = new Reembolso(monto, motivo);
-        reembolso.aprobar();
-        estado = EstadoPago.REEMBOLSADO;
+        if (tieneReembolsoPendiente()) {
+            throw new IllegalStateException("Este pago ya tiene una solicitud de reembolso pendiente.");
+        }
+        if (motivo == null || motivo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Indica el motivo del reembolso.");
+        }
+        reembolso = new Reembolso(monto, motivo.trim(), por);
+        registrarEvento(por, "Reembolso SOLICITADO. Motivo: " + reembolso.getMotivo());
+        return "Reembolso solicitado por S/ " + Formato.monto(monto) + ". Queda pendiente de aprobacion.";
     }
 
-    public void setMetodoPago(MetodoPago metodoPago) { this.metodoPago = metodoPago; }
-    public LocalDate getFecha() { 
-        return fecha; 
+    public String aprobarReembolso(Usuario por) {
+        exigirReembolsoPendiente();
+        reembolso.aprobar(por);
+        estado = EstadoPago.REEMBOLSADO;
+        registrarEvento(por, "Reembolso APROBADO por S/ " + Formato.monto(reembolso.getMonto()));
+        return "Reembolso aprobado por S/ " + Formato.monto(reembolso.getMonto()) + ".";
     }
-    public Double getMonto() { 
-        return monto; 
+
+    public String rechazarReembolso(Usuario por) {
+        exigirReembolsoPendiente();
+        reembolso.rechazar(por);
+        registrarEvento(por, "Reembolso RECHAZADO");
+        return "Solicitud de reembolso rechazada. El pago sigue en estado PAGADO.";
     }
-    public EstadoPago getEstado() { 
-        return estado; 
+
+    private void exigirReembolsoPendiente() {
+        if (!tieneReembolsoPendiente()) {
+            throw new IllegalStateException("Este pago no tiene una solicitud de reembolso pendiente.");
+        }
     }
-    public Persona getPersona() { 
-        return persona; 
+
+    private void registrarEvento(Usuario por, String accion) {
+        String quien = (por == null) ? "sistema" : por.getUsuario();
+        historial.add(Formato.fecha(LocalDateTime.now()) + " | " + quien + " | " + accion);
     }
-    public Usuario getRegistradoPor() { 
-        return registradoPor; 
+
+    public int getId() {
+        return id;
     }
-    public ConceptoPago getConcepto() { 
-        return concepto; 
+    public LocalDateTime getFecha() {
+        return fecha;
     }
-    public MetodoPago getMetodoPago() { 
-        return metodoPago; 
+    public BigDecimal getMonto() {
+        return monto;
     }
-    public Comprobante getComprobante() { 
-        return comprobante; 
+    public EstadoPago getEstado() {
+        return estado;
+    }
+    public Persona getPersona() {
+        return persona;
+    }
+    public Usuario getRegistradoPor() {
+        return registradoPor;
+    }
+    public ConceptoPago getConcepto() {
+        return concepto;
+    }
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+    public Comprobante getComprobante() {
+        return comprobante;
+    }
+    public Reembolso getReembolso() {
+        return reembolso;
+    }
+    public List<String> getHistorial() {
+        return Collections.unmodifiableList(historial);
     }
 
     @Override
     public String toString() {
-        return fecha + " | " + persona.getNombres() + " | " + concepto.getNombre()
-                + " | S/ " + String.format("%.2f", monto) + " | " + estado;
+        return "#" + id + " | " + Formato.fecha(fecha) + " | " + persona.getNombres() + " | "
+                + concepto.getNombre() + " | S/ " + Formato.monto(monto) + " | " + estado;
     }
 }

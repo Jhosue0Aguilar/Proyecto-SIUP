@@ -7,11 +7,11 @@ public class PanelPersonas extends JPanel {
     private DefaultTableModel modeloTabla;
 
     private JPanel formulario = new JPanel(new GridLayout(5, 2, 6, 6));
-    private JComboBox<String> cboTipo = new JComboBox<>(new String[]{"Estudiante", "Docente", "Externo"});
+    private JComboBox<TipoPersona> cboTipo = new JComboBox<>(TipoPersona.values());
     private JTextField txtNombres = new JTextField();
     private JTextField txtDoc = new JTextField();
-    private JLabel lblDato1 = new JLabel("Codigo:");
-    private JLabel lblDato2 = new JLabel("Carrera:");
+    private JLabel lblDato1 = new JLabel(TipoPersona.ESTUDIANTE.getEtiquetaDato1());
+    private JLabel lblDato2 = new JLabel(TipoPersona.ESTUDIANTE.getEtiquetaDato2());
     private JTextField txtDato1 = new JTextField();
     private JTextField txtDato2 = new JTextField();
     private JButton btnRegistrar = new JButton("Registrar persona");
@@ -32,7 +32,7 @@ public class PanelPersonas extends JPanel {
         formulario.add(cboTipo);
         formulario.add(new JLabel("Nombres:"));
         formulario.add(txtNombres);
-        formulario.add(new JLabel("Nro. documento:"));
+        formulario.add(new JLabel("Nro. documento (8 digitos):"));
         formulario.add(txtDoc);
         formulario.add(lblDato1);
         formulario.add(txtDato1);
@@ -51,25 +51,36 @@ public class PanelPersonas extends JPanel {
     }
 
     private void cambiarEtiquetas() {
-        switch (cboTipo.getSelectedIndex()) {
-            case 0: lblDato1.setText("Codigo:");  lblDato2.setText("Carrera:");      break;
-            case 1: lblDato1.setText("Codigo:");  lblDato2.setText("Departamento:"); break;
-            default: lblDato1.setText("Empresa:"); lblDato2.setText("RUC:");         break;
-        }
+        TipoPersona tipo = (TipoPersona) cboTipo.getSelectedItem();
+        lblDato1.setText(tipo.getEtiquetaDato1());
+        lblDato2.setText(tipo.getEtiquetaDato2());
     }
 
     public void registrarPersona() {
+        TipoPersona tipo = (TipoPersona) cboTipo.getSelectedItem();
         String nombres = txtNombres.getText().trim();
         String doc = txtDoc.getText().trim();
         String d1 = txtDato1.getText().trim();
         String d2 = txtDato2.getText().trim();
-        if (nombres.isEmpty() || doc.isEmpty() || d1.isEmpty() || d2.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Completa todos los campos.",
-                    "Datos incompletos", JOptionPane.WARNING_MESSAGE);
+
+        String claveTemporal;
+        try {
+            claveTemporal = gestor.registrarPersona(tipo, nombres, doc, d1, d2);
+        } catch (IllegalArgumentException | SecurityException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo registrar", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Persona p = gestor.registrarPersona(cboTipo.getSelectedIndex() + 1, nombres, doc, d1, d2);
-        JOptionPane.showMessageDialog(this, "Persona registrada:\n" + p);
+
+        JTextArea aviso = new JTextArea(
+                "Persona registrada: " + tipo + " - " + nombres + "\n\n"
+                + "Usuario        : " + doc + "\n"
+                + "Clave temporal : " + claveTemporal + "\n\n"
+                + "Entregasela ahora: no se vuelve a mostrar.\n"
+                + "Tendra que cambiarla en su primer ingreso.");
+        aviso.setEditable(false);
+        aviso.setOpaque(false);
+        JOptionPane.showMessageDialog(this, aviso, "Persona registrada", JOptionPane.INFORMATION_MESSAGE);
+
         txtNombres.setText("");
         txtDoc.setText("");
         txtDato1.setText("");
@@ -81,13 +92,13 @@ public class PanelPersonas extends JPanel {
         modeloTabla.setRowCount(0);
         for (Persona p : gestor.getPersonas()) {
             modeloTabla.addRow(new Object[]{
-                    p.getId(), p.getTipo(), p.getNombres(), String.format("%.2f", p.verDeuda())});
+                    p.getId(), p.getTipo(), p.getNombres(), Formato.monto(p.verDeuda())});
         }
     }
 
-    /** Solo el rol TODO (administrador) puede registrar personas. */
+    /** Solo quien tiene el permiso REGISTRAR_PERSONA puede usar el formulario. */
     public void aplicarPermisos() {
-        boolean puede = gestor.tienePermiso("TODO");
+        boolean puede = gestor.tienePermiso(Permiso.REGISTRAR_PERSONA);
         btnRegistrar.setEnabled(puede);
         for (Component c : formulario.getComponents()) c.setEnabled(puede);
     }

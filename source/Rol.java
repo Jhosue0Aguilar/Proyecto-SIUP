@@ -1,21 +1,32 @@
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 public class Rol {
-    private String nombre;
-    private String permisos;
+    private final String nombre;
+    private final Set<Permiso> permisos;
 
-    public Rol(String nombre, String permisos) {
+    public Rol(String nombre, Set<Permiso> permisos) {
         this.nombre = nombre;
-        this.permisos = permisos;
+        EnumSet<Permiso> copia = EnumSet.noneOf(Permiso.class);
+        copia.addAll(permisos);
+        this.permisos = Collections.unmodifiableSet(copia);
     }
 
-    public String getNombre() { 
-        return nombre; 
+    public boolean tienePermiso(Permiso p) {
+        return permisos.contains(p);
     }
-    public String getPermisos() { 
-        return permisos; 
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Set<Permiso> getPermisos() {
+        return permisos;
     }
 
     @Override
-    public String toString() { 
-        return nombre + " (" + permisos + ")"; 
+    public String toString() {
+        return nombre + " " + permisos;
     }
 }

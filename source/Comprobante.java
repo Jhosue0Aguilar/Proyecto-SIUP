@@ -1,30 +1,39 @@
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 public class Comprobante {
     private static int contador = 1;
 
-    private String numero;
-    private Double total;
+    private final String numero;
+    private final BigDecimal total;
+    private final LocalDateTime fechaEmision;
 
-    public Comprobante(Double total) {
+    public Comprobante(BigDecimal total) {
         this.numero = String.format("C-%04d", contador++);
         this.total = total;
+        this.fechaEmision = LocalDateTime.now();
     }
 
-    public void generar(Pago pago) {
-        System.out.println("\n===== COMPROBANTE =====");
-        System.out.println("Numero  : " + numero);
-        System.out.println("Fecha   : " + pago.getFecha());
-        System.out.println("Cliente : " + pago.getPersona().getNombres());
-        System.out.println("Concepto: " + pago.getConcepto().getNombre());
-        System.out.println("Metodo  : " + pago.getMetodoPago().getTipo()
-                + " (Op: " + pago.getMetodoPago().getNumeroOp() + ")");
-        System.out.println("Total   : S/ " + String.format("%.2f", total));
-        System.out.println("=======================");
+    /** Devuelve el texto del comprobante. Es el unico lugar donde se arma. */
+    public String generar(Pago pago) {
+        MetodoPago metodo = pago.getMetodoPago();
+        return "===== COMPROBANTE =====\n"
+                + "Numero  : " + numero + "\n"
+                + "Fecha   : " + Formato.fecha(fechaEmision) + "\n"
+                + "Cliente : " + pago.getPersona().getNombres() + "\n"
+                + "Concepto: " + pago.getConcepto().getNombre() + "\n"
+                + "Metodo  : " + metodo.getTipo() + " (Op: " + metodo.getNumeroOp() + ")\n"
+                + "Total   : S/ " + Formato.monto(total) + "\n"
+                + "=======================";
     }
 
-    public String getNumero() { 
-        return numero; 
+    public String getNumero() {
+        return numero;
     }
-    public Double getTotal() { 
-        return total; 
+    public BigDecimal getTotal() {
+        return total;
+    }
+    public LocalDateTime getFechaEmision() {
+        return fechaEmision;
     }
 }

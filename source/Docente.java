@@ -10,7 +10,7 @@ public class Docente extends Persona {
 
     @Override
     public String getTipo() {
-        return "Docente"; 
+        return TipoPersona.DOCENTE.getEtiqueta(); 
     }
 
     @Override

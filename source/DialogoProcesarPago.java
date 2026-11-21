@@ -2,8 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class DialogoProcesarPago extends JDialog {
-    private JComboBox<String> cboMetodo =
-            new JComboBox<>(new String[]{"Efectivo", "Tarjeta", "Yape/Plin", "Transferencia"});
+    private JComboBox<TipoMetodoPago> cboMetodo = new JComboBox<>(TipoMetodoPago.values());
     private JTextField txtOperacion = new JTextField(15);
     private MetodoPago resultado = null;
 
@@ -20,7 +19,7 @@ public class DialogoProcesarPago extends JDialog {
         JButton btnAceptar = new JButton("Aceptar");
         JButton btnCancelar = new JButton("Cancelar");
         btnAceptar.addActionListener(e -> {
-            resultado = new MetodoPago((String) cboMetodo.getSelectedItem(), txtOperacion.getText().trim());
+            resultado = new MetodoPago((TipoMetodoPago) cboMetodo.getSelectedItem(), txtOperacion.getText().trim());
             dispose();
         });
         btnCancelar.addActionListener(e -> dispose());
@@ -36,7 +35,7 @@ public class DialogoProcesarPago extends JDialog {
         setLocationRelativeTo(padre);
     }
 
-    // Muestra el diálogo y devuelve el método elegido, o null si se canceló.
+    // Muestra el dialogo y devuelve el metodo elegido, o null si se cancelo.
     public MetodoPago mostrar() {
         setVisible(true);
         return resultado;

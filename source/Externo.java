@@ -10,7 +10,7 @@ public class Externo extends Persona {
 
     @Override
     public String getTipo() { 
-        return "Externo"; 
+        return TipoPersona.EXTERNO.getEtiqueta(); 
     }
 
     @Override

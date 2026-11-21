@@ -1,11 +1,15 @@
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class Persona {
-    protected int id;
-    protected String nombres;
-    protected String numeroDoc;
-    protected Usuario usuario;
-    protected List<Pago> pagos = new ArrayList<>();
+    private final int id;
+    private final String nombres;
+    private final String numeroDoc;
+    private Usuario usuario;
+    // Unica lista de pagos del sistema: GestorPagos no guarda otra copia.
+    private final List<Pago> pagos = new ArrayList<>();
 
     public Persona(int id, String nombres, String nroDoc) {
         this.id = id;
@@ -13,37 +17,44 @@ public abstract class Persona {
         this.numeroDoc = nroDoc;
     }
 
-    public double verDeuda() {
-        double deuda = 0;
+    public BigDecimal verDeuda() {
+        BigDecimal deuda = BigDecimal.ZERO;
         for (Pago p : pagos) {
             if (p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.RECHAZADO) {
-                deuda += p.getMonto();
+                deuda = deuda.add(p.getMonto());
             }
         }
         return deuda;
     }
 
+    /** Descuento como fraccion entre 0 y 1 (0.10 = 10 %). Por defecto no hay descuento. */
+    public BigDecimal getDescuento() {
+        return BigDecimal.ZERO;
+    }
+
     public abstract String getTipo();
 
-    public void agregarPago(Pago p) { pagos.add(p); }
+    public void agregarPago(Pago p) {
+        pagos.add(p);
+    }
 
-    public int getId() { 
-        return id; 
+    public int getId() {
+        return id;
     }
-    public String getNombres() { 
-        return nombres; 
+    public String getNombres() {
+        return nombres;
     }
-    public String getNumeroDoc() { 
-        return numeroDoc; 
+    public String getNumeroDoc() {
+        return numeroDoc;
     }
-    public Usuario getUsuario() { 
-        return usuario; 
+    public Usuario getUsuario() {
+        return usuario;
     }
-    public void setUsuario(Usuario usuario) { 
-        this.usuario = usuario; 
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     public List<Pago> getPagos() {
-        return pagos; 
+        return Collections.unmodifiableList(pagos);
     }
 
     @Override
