@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class VentanaLogin extends JFrame {
     private JTextField txtUsuario = new JTextField(15);
@@ -50,7 +50,7 @@ public class VentanaLogin extends JFrame {
         dispose();
     }
 
-    /** Obliga a cambiar la clave temporal. Devuelve false si la persona cancela. */
+    // Obliga a cambiar la clave temporal. Devuelve false si la persona cancela. 
     private boolean pedirNuevaClave() {
         JPasswordField nueva = new JPasswordField(15);
         JPasswordField repetir = new JPasswordField(15);
@@ -76,7 +76,8 @@ public class VentanaLogin extends JFrame {
             try {
                 gestor.cambiarClave(n1);
                 return true;
-            } catch (IllegalArgumentException ex) {
+            } 
+            catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Clave no valida", JOptionPane.WARNING_MESSAGE);
             }
         }

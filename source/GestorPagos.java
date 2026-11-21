@@ -1,9 +1,6 @@
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.List;
+import java.math.*;
+import java.util.*;
+
 
 public class GestorPagos {
     private final List<Persona> personas = new ArrayList<>();
@@ -32,12 +29,12 @@ public class GestorPagos {
         d.setUsuario(new Usuario("admin", "1234", rolAdministrador));
         personas.add(d);
 
-        Estudiante e = new Estudiante(siguienteIdPersona++, "Yael Mendoza", "71234567", "20250001", "Ing. de Sistemas");
-        e.setUsuario(new Usuario("yaelmelagoza", "67123", rolCajero));
+        Estudiante e = new Estudiante(siguienteIdPersona++, "Yael Mendoza Flores", "71234567", "20250001", "Ing. de Sistemas");
+        e.setUsuario(new Usuario("yamenflo", "67123", rolCajero));
         personas.add(e);
     }
 
-    // ---------------------------------------------------------------- sesion
+    //sesion
 
     public boolean iniciarSesion(String usuario, String clave) {
         for (Persona p : personas) {
@@ -57,7 +54,7 @@ public class GestorPagos {
         return personaSesion != null && personaSesion.getUsuario().isClaveTemporal();
     }
 
-    /** Cambia la clave del usuario con sesion iniciada. */
+    // Cambia la clave del usuario con sesion iniciada. 
     public void cambiarClave(String nueva) {
         exigirSesion();
         personaSesion.getUsuario().cambiarClave(nueva);
@@ -69,9 +66,9 @@ public class GestorPagos {
                 && personaSesion.getUsuario().getRol().tienePermiso(permiso);
     }
 
-    // ------------------------------------------------------------- personas
+    //personas
 
-    /**
+    /*
      * Registra una persona y le crea un usuario (su nro. de documento) con una clave temporal
      * aleatoria. Devuelve esa clave: es la unica vez que se conoce, luego solo queda su hash.
      * Lanza IllegalArgumentException si los datos no son validos o el documento ya existe.
@@ -134,7 +131,7 @@ public class GestorPagos {
         return s == null ? "" : s.trim();
     }
 
-    // ---------------------------------------------------------------- pagos
+    //pagos
 
     public Pago registrarPago(Persona persona, ConceptoPago concepto) {
         exigirPermiso(Permiso.REGISTRAR_PAGO);
@@ -176,13 +173,13 @@ public class GestorPagos {
         return pago.rechazarReembolso(personaSesion.getUsuario());
     }
 
-    // ----------------------------------------------------------- consultas
+    //consultas
 
     public Persona getPersonaSesion() {
         return personaSesion;
     }
 
-    /** Personas que la sesion puede ver: todas con VER_TODO, si no solo la propia. */
+    // Personas que la sesion puede ver: todas con VER_TODO, si no solo la propia. 
     public List<Persona> getPersonas() {
         if (tienePermiso(Permiso.VER_TODO)) {
             return Collections.unmodifiableList(new ArrayList<>(personas));
@@ -192,7 +189,7 @@ public class GestorPagos {
         return propias;
     }
 
-    /** Pagos que la sesion puede ver (todos con VER_TODO, si no solo los propios), ordenados por numero. */
+    // Pagos que la sesion puede ver (todos con VER_TODO, si no solo los propios), ordenados por numero. 
     public List<Pago> getPagos() {
         List<Pago> visibles = new ArrayList<>();
         for (Persona p : getPersonas()) {
@@ -211,7 +208,7 @@ public class GestorPagos {
         return Collections.unmodifiableList(conceptos);
     }
 
-    // ----------------------------------------------------------- seguridad
+    //seguridad
 
     private void exigirSesion() {
         if (personaSesion == null) {

@@ -1,7 +1,6 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 
 public abstract class Persona {
     private final int id;
@@ -27,7 +26,7 @@ public abstract class Persona {
         return deuda;
     }
 
-    /** Descuento como fraccion entre 0 y 1 (0.10 = 10 %). Por defecto no hay descuento. */
+    // Descuento como fraccion entre 0 y 1 (0.10 = 10 %). Por defecto no hay descuento. 
     public BigDecimal getDescuento() {
         return BigDecimal.ZERO;
     }

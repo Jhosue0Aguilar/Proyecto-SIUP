@@ -35,7 +35,7 @@ public class Usuario {
         return this.usuario.equals(usuario) && coincideClave(clave);
     }
 
-    /** Cambia la clave. Lanza IllegalArgumentException si no cumple las reglas. */
+    // Cambia la clave. Lanza IllegalArgumentException si no cumple las reglas. 
     public void cambiarClave(String nueva) {
         if (nueva == null || nueva.length() < LARGO_MIN_CLAVE) {
             throw new IllegalArgumentException("La clave debe tener al menos " + LARGO_MIN_CLAVE + " caracteres.");
@@ -50,7 +50,7 @@ public class Usuario {
         claveTemporal = false;
     }
 
-    /** Clave aleatoria de 10 caracteres (sin caracteres ambiguos como 0/O o 1/l/I). */
+    // Clave aleatoria de 10 caracteres (sin caracteres ambiguos como 0/O o 1/l/I). 
     public static String generarClaveTemporal() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 10; i++) {
@@ -78,9 +78,11 @@ public class Usuario {
         try {
             byte[] hash = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256").generateSecret(spec).getEncoded();
             return Base64.getEncoder().encodeToString(sal) + ":" + Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+        } 
+        catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new IllegalStateException("No se pudo calcular el hash de la clave.", e);
-        } finally {
+        } 
+        finally {
             spec.clearPassword();
         }
     }

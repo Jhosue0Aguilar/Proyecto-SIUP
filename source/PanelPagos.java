@@ -90,7 +90,8 @@ public class PanelPagos extends JPanel {
                     (ConceptoPago) cboConcepto.getSelectedItem());
             refrescar();
             JOptionPane.showMessageDialog(this, "Pago registrado como PENDIENTE:\n" + pago);
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
+        } 
+        catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
             mostrarError(ex);
         }
     }
@@ -110,7 +111,8 @@ public class PanelPagos extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, mensaje, "Rechazado", JOptionPane.WARNING_MESSAGE);
             }
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
+        } 
+        catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
             mostrarError(ex);
             refrescar();
         }
@@ -123,23 +125,26 @@ public class PanelPagos extends JPanel {
             String mensaje = gestor.anularPago(pago);
             refrescar();
             JOptionPane.showMessageDialog(this, mensaje);
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
+        } 
+        catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
             mostrarError(ex);
             refrescar();
         }
     }
 
-    /** Si el pago tiene un reembolso pendiente lo resuelve (aprobar/rechazar); si no, lo solicita. */
+    // Si el pago tiene un reembolso pendiente lo resuelve (aprobar/rechazar); si no, lo solicita. 
     public void reembolsarPago() {
         Pago pago = exigirSeleccion();
         if (pago == null) return;
         try {
             if (pago.tieneReembolsoPendiente()) {
                 resolverReembolso(pago);
-            } else {
+            } 
+            else {
                 solicitarReembolso(pago);
             }
-        } catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
+        } 
+        catch (IllegalArgumentException | IllegalStateException | SecurityException ex) {
             mostrarError(ex);
             refrescar();
         }
@@ -165,9 +170,11 @@ public class PanelPagos extends JPanel {
         String mensaje;
         if (eleccion == 0) {
             mensaje = gestor.aprobarReembolso(pago);
-        } else if (eleccion == 1) {
+        } 
+        else if (eleccion == 1) {
             mensaje = gestor.rechazarReembolso(pago);
-        } else {
+        } 
+        else {
             return;
         }
         refrescar();
@@ -221,7 +228,7 @@ public class PanelPagos extends JPanel {
         actualizarBotones();
     }
 
-    /** Habilita cada boton segun el permiso de la sesion y el estado del pago seleccionado. */
+    // Habilita cada boton segun el permiso de la sesion y el estado del pago seleccionado. 
     private void actualizarBotones() {
         Pago p = pagoSeleccionado();
         boolean hayPago = p != null;

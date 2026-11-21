@@ -1,7 +1,7 @@
-import java.math.BigDecimal;
+import java.math.*;
 import java.time.LocalDateTime;
 
-/** Flujo: solicitado (pendiente) -> aprobado o rechazado, guardando quien lo resolvio y cuando. */
+// Flujo: solicitado (pendiente) -> aprobado o rechazado, guardando quien lo resolvio y cuando. 
 public class Reembolso {
     private final BigDecimal monto;
     private final String motivo;

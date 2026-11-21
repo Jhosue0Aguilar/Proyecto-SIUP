@@ -1,6 +1,4 @@
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 public class Rol {
     private final String nombre;

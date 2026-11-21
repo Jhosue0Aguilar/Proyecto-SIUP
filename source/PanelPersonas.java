@@ -1,6 +1,6 @@
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class PanelPersonas extends JPanel {
     private GestorPagos gestor;
@@ -66,7 +66,8 @@ public class PanelPersonas extends JPanel {
         String claveTemporal;
         try {
             claveTemporal = gestor.registrarPersona(tipo, nombres, doc, d1, d2);
-        } catch (IllegalArgumentException | SecurityException ex) {
+        } 
+        catch (IllegalArgumentException | SecurityException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "No se pudo registrar", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -96,7 +97,7 @@ public class PanelPersonas extends JPanel {
         }
     }
 
-    /** Solo quien tiene el permiso REGISTRAR_PERSONA puede usar el formulario. */
+    // Solo quien tiene el permiso REGISTRAR_PERSONA puede usar el formulario. 
     public void aplicarPermisos() {
         boolean puede = gestor.tienePermiso(Permiso.REGISTRAR_PERSONA);
         btnRegistrar.setEnabled(puede);

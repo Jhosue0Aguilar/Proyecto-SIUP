@@ -1,7 +1,7 @@
-import java.math.BigDecimal;
+import java.math.*;
 
 public class Estudiante extends Persona {
-    /** Descuento de estudiante como fraccion (0.10 = 10 %). El UML no fija el valor: ajustalo aqui. */
+    // Descuento de estudiante como fraccion (0.10 = 10 %). El UML no fija el valor: ajustalo aqui. 
     public static final BigDecimal DESCUENTO = new BigDecimal("0.00");
 
     private String codigo;

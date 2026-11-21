@@ -1,8 +1,7 @@
-import java.math.BigDecimal;
+import java.math.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 
 public class Pago {
     private final int id;
@@ -20,7 +19,7 @@ public class Pago {
     // Auditoria: quien hizo cada accion y cuando.
     private final List<String> historial = new ArrayList<>();
 
-    /** El pago NO se agrega solo a la persona: lo hace GestorPagos.registrarPago. */
+    // El pago NO se agrega solo a la persona: lo hace GestorPagos.registrarPago. 
     public Pago(int id, Persona persona, Usuario registradoPor, ConceptoPago concepto) {
         this.id = id;
         this.fecha = LocalDateTime.now();
@@ -48,7 +47,7 @@ public class Pago {
         return estado == EstadoPago.PAGADO && !tieneReembolsoPendiente();
     }
 
-    /**
+    /*
      * Cobra el pago. El metodo de pago solo se guarda si el cobro se realiza, asi un intento
      * sobre un pago ya cobrado no cambia los datos del comprobante original.
      * Lanza IllegalStateException si el estado no permite procesar; devuelve el mensaje del resultado.
@@ -79,7 +78,7 @@ public class Pago {
         return "Pago anulado.";
     }
 
-    /** Crea una solicitud de reembolso pendiente; el pago sigue PAGADO hasta que se apruebe. */
+    // Crea una solicitud de reembolso pendiente; el pago sigue PAGADO hasta que se apruebe. 
     public String solicitarReembolso(String motivo, Usuario por) {
         if (estado != EstadoPago.PAGADO) {
             throw new IllegalStateException("Solo se pueden reembolsar pagos en estado PAGADO.");

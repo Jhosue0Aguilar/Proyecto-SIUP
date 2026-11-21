@@ -1,4 +1,4 @@
-import java.math.BigDecimal;
+import java.math.*;
 import java.time.LocalDateTime;
 
 public class Comprobante {
@@ -14,7 +14,7 @@ public class Comprobante {
         this.fechaEmision = LocalDateTime.now();
     }
 
-    /** Devuelve el texto del comprobante. Es el unico lugar donde se arma. */
+    // Devuelve el texto del comprobante. Es el unico lugar donde se arma. 
     public String generar(Pago pago) {
         MetodoPago metodo = pago.getMetodoPago();
         return "===== COMPROBANTE =====\n"

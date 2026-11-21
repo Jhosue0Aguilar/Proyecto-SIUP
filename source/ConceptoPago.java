@@ -12,7 +12,7 @@ public class ConceptoPago {
         this.monto = monto;
     }
 
-    /** Monto a cobrar a esa persona, aplicando su descuento. */
+    // Monto a cobrar a esa persona, aplicando su descuento. 
     public BigDecimal calcularMonto(Persona persona) {
         BigDecimal descuento = persona.getDescuento();
         if (descuento.signum() < 0 || descuento.compareTo(BigDecimal.ONE) > 0) {
